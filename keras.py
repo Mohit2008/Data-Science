@@ -204,8 +204,10 @@ history = model.fit_generator(
  -------------------------------------------------------------
   
 14. You can save your model in keras to disk:
-  
+  from keras.models import load_model
+
   model.save('cats_and_dogs_small_1.h5')
+  model = load_model('cats_and_dogs_small_2.h5')
   
   -------------------------------------------------------------
   
@@ -329,7 +331,17 @@ history = model.fit_generator(
       validation_data=validation_generator,
       validation_steps=50)
   
+  -------------------------------------------------------------
   
+  17. A few remarkable things to note here:
+
+- The first layer acts as a collection of various edge detectors. At that stage, the activations are still retaining almost all of the 
+information present in the initial picture.
+- As we go higher-up, the activations become increasingly abstract and less visually interpretable. They start encoding higher-level 
+concepts such as "cat ear" or "cat eye". Higher-up presentations carry increasingly less information about the visual contents of 
+the image, and increasingly more information related to the class of the image.
+- The sparsity of the activations is increasing with the depth of the layer: in the first layer, all filters are activated by the 
+input image, but in the following layers more and more filters are blank. This means that the pattern encoded by the filter isn't found in the input image.
   
   
   
