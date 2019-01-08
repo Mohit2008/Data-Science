@@ -342,9 +342,92 @@ concepts such as "cat ear" or "cat eye". Higher-up presentations carry increasin
 the image, and increasingly more information related to the class of the image.
 - The sparsity of the activations is increasing with the depth of the layer: in the first layer, all filters are activated by the 
 input image, but in the following layers more and more filters are blank. This means that the pattern encoded by the filter isn't found in the input image.
+ 
+  -------------------------------------------------------------
+  
+18. Text processing, converting text to sequence or one hot encoded arrays:
+  
+from keras.preprocessing.text import Tokenizer
+samples = ['The cat sat on the mat.', 'The dog ate my homework.']
+tokenizer = Tokenizer(num_words=10000)
+tokenizer.fit_on_texts(samples)
+sequences = tokenizer.texts_to_sequences(samples) # integer sequence
+one_hot_results = tokenizer.texts_to_matrix(samples, mode='binary') # one hot encoded
+word_index = tokenizer.word_index # get the token dictionary
+
+
+
+  -------------------------------------------------------------
+  
+  19. Pad the sequence such that each sample is of same length:
+    
+from keras import preprocessing
+x_train = preprocessing.sequence.pad_sequences(x_train, maxlen=maxlen) # pad the integer sequence with some length =maxlen, larger sequence are dropped smaller one are padded with 0
+x_test = preprocessing.sequence.pad_sequences(x_test, maxlen=maxlen)
+
+  -------------------------------------------------------------
+ 
+20. Use Embedding layer:
+  
+from keras.layers import Embedding
+
+# The Embedding layer takes at least two arguments:
+# the number of possible tokens, here 1000 (1 + maximum word index),
+# and the dimensionality of the embeddings, here 64.
+embedding_layer = Embedding(1000, 64) # for 1000 tokens represent each token with a 64 dim vector
+
+  -------------------------------------------------------------
+  
+  21. Use a pre trained embedding:
+    
+from keras.models import Sequential
+from keras.layers import Embedding, Flatten, Dense
+
+model = Sequential()
+model.add(Embedding(max_words, embedding_dim, input_length=maxlen))
+model.add(Flatten())
+model.add(Dense(32, activation='relu'))
+model.add(Dense(1, activation='sigmoid'))
+model.summary()
+
+model.layers[0].set_weights([embedding_matrix]) # set the pre trained embedding in the first layer
+model.layers[0].trainable = False # set the training of this to be false
+
+  -------------------------------------------------------------
+  
+  
+22. For using custom embedding below is the kind of network:
+  
+from keras.models import Sequential
+from keras.layers import Embedding, Flatten, Dense
+
+model = Sequential()
+model.add(Embedding(max_words, embedding_dim, input_length=maxlen))
+model.add(Flatten())
+model.add(Dense(32, activation='relu'))
+model.add(Dense(1, activation='sigmoid'))
+model.summary()
+
+model.compile(optimizer='rmsprop',
+              loss='binary_crossentropy',
+              metrics=['acc'])
+history = model.fit(x_train, y_train,
+                    epochs=10,
+                    batch_size=32,
+                    validation_data=(x_val, y_val))
+
+   -------------------------------------------------------------
+  
+  24.
   
   
   
   
   
+  
+  
+    -------------------------------------------------------------
+    
+    25.
+    
   
