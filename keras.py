@@ -254,13 +254,80 @@ history = model.fit_generator(
 
   -------------------------------------------------------------
   
-  16.
+  16. Pretrained Convnet
+  
+  Uisng the pretrained network you can perform 2 things one is to just use the conv base of pre trained network and use that to extract new features
+  which will be fed into a classifier that you will train from scratch or you can perform fine tuning where you fix the first few layers of previosuly
+  trained convnet and will update the last few layers along with dense layers to build your classifier
   
   
   
+from keras.applications import VGG16
+
+conv_base = VGG16(weights='imagenet', # to specify which weight checkpoint to initialize the model from
+                  include_top=False, # not include dense layer
+                  input_shape=(150, 150, 3)) # the shape of image that we are going to pass to network
+
+* You have two options from here , one is that you can directly pass in all your images and run through the predict method of this conv_base and
+save it to disk or numpy array in which case your images have to pass through the conv_base only once and this will be quick however you wont be 
+able to augument your images this was.
+
+The second option is to create a netwrok with the conv_base and desnly connected layer and train the network by setting the conv_base trainiable param to 
+false and pass in the data through entire netwrok this is slow but will make use of data augumentation.
+model = models.Sequential()
+model.add(conv_base)
+model.add(layers.Flatten())
+model.add(layers.Dense(256, activation='relu'))
+model.add(layers.Dense(1, activation='sigmoid'))
+conv_base.trainable = False
+
+model.compile(loss='binary_crossentropy',
+              optimizer=optimizers.RMSprop(lr=2e-5),
+              metrics=['acc'])
+
+history = model.fit_generator(
+      train_generator,
+      steps_per_epoch=100,
+      epochs=30,
+      validation_data=validation_generator,
+      validation_steps=50,
+      verbose=2)
+
+* In FineTuning process you are going to set the training for last few layers of the conv_base For the same reason, it is only possible 
+to fine-tune the top layers of the convolutional base once the classifier on top has already been trained. If the classified wasn't 
+already trained, then the error signal propagating through the network during training would be too large, and the representations 
+previously learned by the layers being fine-tuned would be destroyed. 
+Thus the steps for fine-tuning a network are as follow:
+
+1) Add your custom network on top of an already trained base network.
+2) Freeze the base network.
+3) Train the part you added.
+4) Unfreeze some layers in the base network.
+5) Jointly train both these layers and the part you added.:
+ 
+We have already completed the first 3 steps when doing feature extraction. Let's proceed with the 4th step: 
+we will unfreeze our conv_base, and then freeze individual layers inside of it.
+
+conv_base.trainable = True
+set_trainable = False
+for layer in conv_base.layers:
+    if layer.name == 'block5_conv1':
+        set_trainable = True
+    if set_trainable:
+        layer.trainable = True
+    else:
+        layer.trainable = False
   
-  
-  
+model.compile(loss='binary_crossentropy',
+              optimizer=optimizers.RMSprop(lr=1e-5),
+              metrics=['acc'])
+
+history = model.fit_generator(
+      train_generator,
+      steps_per_epoch=100,
+      epochs=100,
+      validation_data=validation_generator,
+      validation_steps=50)
   
   
   
