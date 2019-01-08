@@ -402,7 +402,7 @@ from keras.models import Sequential
 from keras.layers import Embedding, Flatten, Dense
 
 model = Sequential()
-model.add(Embedding(max_words, embedding_dim, input_length=maxlen))
+model.add(Embedding(max_words, embedding_dim, input_length=maxlen)) # will output a 3d tensor (samples, maxlen, embedding_dim)
 model.add(Flatten())
 model.add(Dense(32, activation='relu'))
 model.add(Dense(1, activation='sigmoid'))
@@ -416,18 +416,43 @@ history = model.fit(x_train, y_train,
                     batch_size=32,
                     validation_data=(x_val, y_val))
 
+
+You can imagine the output from a embedding to be a tensor of 3d where each sample will be of 2 dim like image but in case of text it would be 
+no of words, embedding_dim. For ex if you have 5 words in a sequence then your single sample will be represneted by (5,embedding_dim).
+
+* When you pass the above output into a RNN it will process this sequence one at a time such that at every timestep it takes one sequence 
+and use that to calculate output which is then fed as a input to next sequence and this happens for the amaount of sequence length.
    -------------------------------------------------------------
   
-  24.
+  24. SimpleRNN
   
-  
-  
-  
-  
-  
+from keras.models import Sequential
+from keras.layers import Embedding, SimpleRNN
+model = Sequential()
+model.add(Embedding(10000, 32))
+model.add(SimpleRNN(32, return_sequences=True)) # when you want to get the ouput from every sequence processed such that it feds into the next rnn layer. It gives tensor of size (batch_size, timesteps, output_features)
+model.add(SimpleRNN(32, return_sequences=True))
+model.add(SimpleRNN(32, return_sequences=True))
+model.add(SimpleRNN(32))  # This last layer only returns the last outputs.
+model.summary()
   
     -------------------------------------------------------------
     
-    25.
+    25. LSTM
     
-  
+ from keras.layers import LSTM
+
+model = Sequential()
+model.add(Embedding(max_features, 32))
+model.add(LSTM(32)) # since we have a single layer we didnt had return sequence
+model.add(Dense(1, activation='sigmoid'))
+
+model.compile(optimizer='rmsprop',
+              loss='binary_crossentropy',
+              metrics=['acc'])
+history = model.fit(input_train, y_train,
+                    epochs=10,
+                    batch_size=128,
+                    validation_split=0.2)
+    
+    -------------------------------------------------------------
