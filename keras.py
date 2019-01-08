@@ -9,7 +9,7 @@ test_labels = to_categorical(test_labels)
 
 2. A simple model in keras looks like the following:
   
- from keras import models
+from keras import models
 from keras import layers
 
 network = models.Sequential()
@@ -64,7 +64,7 @@ history_dict = history.history
 history_dict.keys()
 # dict_keys(['val_loss', 'val_binary_accuracy', 'loss', 'binary_accuracy'])
 
-Visualisation:
+* Visualisation:
   
 import matplotlib.pyplot as plt
 
@@ -116,3 +116,156 @@ Or you can use them as integer but the loss function you would have to use would
     
     
  -------------------------------------------------------------
+
+10. The following strategies could be useful to prevent the model from overfitting:
+  - Get more data(most important)
+  -Adjust your network architecture, bigger network give more room to learn the patterns leading to overfitting of your model, a smaller 
+  network can act as a bottleneck not letting network learn enough patterns causing underfitting.
+  - Add requilarisation contraints such as l1,l2, droput, batch normalisation, wieghts initialiser.
+  
+  
+  The general workflow to find an appropriate model size is to start with relatively few layers and parameters, and start increasing 
+  the size of the layers or adding new layers until you see diminishing returns with regard to the validation loss.
+  
+* Weights regulariser:
+    
+from keras import regularizers
+
+l2_model = models.Sequential()
+l2_model.add(layers.Dense(16, kernel_regularizer=regularizers.l2(0.001),
+                          activation='relu', input_shape=(10000,))) # regularizers.l1_l2(l1=0.001, l2=0.001), regularizers.l1(0.001)
+l2_model.add(layers.Dense(16, kernel_regularizer=regularizers.l2(0.001),
+                          activation='relu'))
+l2_model.add(layers.Dense(1, activation='sigmoid'))
+
+
+* Droput:
+  
+dpt_model.add(layers.Dense(16, activation='relu', input_shape=(10000,))) # input_shape tells the shape of one sample along with comma where you can have any sample size
+dpt_model.add(layers.Dropout(0.5))
+
+
+ -------------------------------------------------------------
+  
+11. Convnets:
+    
+from keras import layers
+from keras import models
+
+model = models.Sequential()
+model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(28, 28, 1))) # you have 32 filters of size 3*3 and stride 1, notice the input shape this contains the dimensiosn of one sample
+model.add(layers.MaxPooling2D((2, 2))) # you have a max pooling of size 2*2 and stride 2
+model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+model.add(layers.MaxPooling2D((2, 2)))
+model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+model.add(layers.Flatten()) # flatten out the tensor into one vector of length 64*3*3
+model.add(layers.Dense(64, activation='relu')) # create fully connected layer
+model.add(layers.Dense(10, activation='softmax')) # apply oputput layer and softmax function
+
+model.summary() # see how the model architecture looks like 
+  
+  -------------------------------------------------------------
+  
+12. Always remember to vectorise the image in float32 and divide by 255 
+
+train_images = train_images.reshape((60000, 28, 28, 1)) # depending upon no of channels
+train_images = train_images.astype('float32') / 255
+
+test_images = test_images.reshape((10000, 28, 28, 1))
+test_images = test_images.astype('float32') / 255
+  
+ -------------------------------------------------------------
+
+13. To create an iterator of your directory to pull in the images data use the following:
+  
+from keras.preprocessing.image import ImageDataGenerator
+
+# All images will be rescaled by 1./255
+train_datagen = ImageDataGenerator(rescale=1./255)
+test_datagen = ImageDataGenerator(rescale=1./255)
+
+train_generator = train_datagen.flow_from_directory(
+        train_dir,target_size=(150, 150),batch_size=20,class_mode='binary')
+
+validation_generator = test_datagen.flow_from_directory(
+        validation_dir,target_size=(150, 150), batch_size=20,class_mode='binary')
+  
+  
+* When every you are using some generator function you will now have to use fir_generator, evaluate_generator, predict_generator which 
+is provided by keras which lets it know that the data has to be generated from a generator function which in our case is ImageDataGenerator:
+  
+history = model.fit_generator(
+      train_generator,
+      steps_per_epoch=100, # the generator will run infinetly and thus we need to indicate to keras how many round of generation will include all our data or complete one epoch, we have 2000 images in train and batch size was 20 so 20*100=2000
+      epochs=30,
+      validation_data=validation_generator, 
+      validation_steps=50) # same for validation data
+
+ -------------------------------------------------------------
+  
+14. You can save your model in keras to disk:
+  
+  model.save('cats_and_dogs_small_1.h5')
+  
+  -------------------------------------------------------------
+  
+ 15. Overfitting in Convnets can be significantly reduces by data augumentation and droput , you can augument the data using the fowlloing:
+  
+  train_datagen = ImageDataGenerator(
+    rescale=1./255,
+    rotation_range=40, #s a value in degrees (0-180), a range within which to randomly rotate pictures.
+    width_shift_range=0.2, # are ranges (as a fraction of total width or height) within which to randomly translate pictures vertically or horizontally.
+    height_shift_range=0.2, # are ranges (as a fraction of total width or height) within which to randomly translate pictures vertically or horizontally.
+    shear_range=0.2, # is for randomly applying shearing transformations.
+    zoom_range=0.2, # s for randomly zooming inside pictures.
+    horizontal_flip=True,# is for randomly flipping half of the images horizontally 
+   fill_mode='nearest',) # is the strategy used for filling in newly created pixels, which can appear after a rotation or a width/height shift.
+  
+  
+model = models.Sequential()
+model.add(layers.Conv2D(32, (3, 3), activation='relu',
+                        input_shape=(150, 150, 3)))
+model.add(layers.MaxPooling2D((2, 2)))
+model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+model.add(layers.MaxPooling2D((2, 2)))
+model.add(layers.Conv2D(128, (3, 3), activation='relu'))
+model.add(layers.MaxPooling2D((2, 2)))
+model.add(layers.Conv2D(128, (3, 3), activation='relu'))
+model.add(layers.MaxPooling2D((2, 2)))
+model.add(layers.Flatten())
+model.add(layers.Dropout(0.5))
+model.add(layers.Dense(512, activation='relu'))
+model.add(layers.Dense(1, activation='sigmoid'))
+
+model.compile(loss='binary_crossentropy',
+              optimizer=optimizers.RMSprop(lr=1e-4),
+              metrics=['acc'])
+
+test_datagen = ImageDataGenerator(rescale=1./255)
+
+train_generator = train_datagen.flow_from_directory(
+        train_dir,target_size=(150, 150), batch_size=32, class_mode='binary')
+
+validation_generator = test_datagen.flow_from_directory(
+        validation_dir,target_size=(150, 150),batch_size=32,class_mode='binary')
+
+history = model.fit_generator(
+      train_generator,steps_per_epoch=100,epochs=100,validation_data=validation_generator,validation_steps=50)
+
+  -------------------------------------------------------------
+  
+  16.
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
