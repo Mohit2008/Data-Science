@@ -547,9 +547,35 @@ model.compile(optimizer='rmsprop', loss='binary_crossentropy', metrics=['acc'])
 history = model.fit(x_train, y_train, epochs=10, batch_size=128, validation_split=0.2)    
     
     
+-------------------------------------------------------------
     
+32. Sequence data can also be processed in a way faster way using 1d convolution such that the conv layer extracts feature whereever it exsist in 
+the sequence.
+
+from keras.models import Sequential
+from keras import layers
+from keras.optimizers import RMSprop
+
+model = Sequential()
+model.add(layers.Embedding(max_features, 128, input_length=max_len))
+model.add(layers.Conv1D(32, 7, activation='relu'))
+model.add(layers.MaxPooling1D(5))
+model.add(layers.Conv1D(32, 7, activation='relu'))
+model.add(layers.GlobalMaxPooling1D())
+model.add(layers.Dense(1))
     
-    
-    
-    
+
+-------------------------------------------------------------
+
+33. You can even combine the convolution with recurrent layers so that the conv layers extract features from the sequence and then use 
+feature map to lears the states between the feature maps 
+
+model = Sequential()
+model.add(layers.Conv1D(32, 5, activation='relu',
+                        input_shape=(None, float_data.shape[-1])))
+model.add(layers.MaxPooling1D(3))
+model.add(layers.Conv1D(32, 5, activation='relu'))
+model.add(layers.GRU(32, dropout=0.1, recurrent_dropout=0.5))
+model.add(layers.Dense(1))
+
     
