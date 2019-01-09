@@ -144,8 +144,7 @@ l2_model.add(layers.Dense(1, activation='sigmoid'))
 dpt_model.add(layers.Dense(16, activation='relu', input_shape=(10000,))) # input_shape tells the shape of one sample along with comma where you can have any sample size
 dpt_model.add(layers.Dropout(0.5))
 
-
- -------------------------------------------------------------
+-------------------------------------------------------------
   
 11. Convnets:
     
@@ -164,7 +163,7 @@ model.add(layers.Dense(10, activation='softmax')) # apply oputput layer and soft
 
 model.summary() # see how the model architecture looks like 
   
-  -------------------------------------------------------------
+-------------------------------------------------------------
   
 12. Always remember to vectorise the image in float32 and divide by 255 
 
@@ -201,7 +200,7 @@ history = model.fit_generator(
       validation_data=validation_generator, 
       validation_steps=50) # same for validation data
 
- -------------------------------------------------------------
+-------------------------------------------------------------
   
 14. You can save your model in keras to disk:
   from keras.models import load_model
@@ -209,7 +208,7 @@ history = model.fit_generator(
   model.save('cats_and_dogs_small_1.h5')
   model = load_model('cats_and_dogs_small_2.h5')
   
-  -------------------------------------------------------------
+-------------------------------------------------------------
   
  15. Overfitting in Convnets can be significantly reduces by data augumentation and droput , you can augument the data using the fowlloing:
   
@@ -254,7 +253,7 @@ validation_generator = test_datagen.flow_from_directory(
 history = model.fit_generator(
       train_generator,steps_per_epoch=100,epochs=100,validation_data=validation_generator,validation_steps=50)
 
-  -------------------------------------------------------------
+-------------------------------------------------------------
   
   16. Pretrained Convnet
   
@@ -331,7 +330,7 @@ history = model.fit_generator(
       validation_data=validation_generator,
       validation_steps=50)
   
-  -------------------------------------------------------------
+-------------------------------------------------------------
   
   17. A few remarkable things to note here:
 
@@ -343,7 +342,7 @@ the image, and increasingly more information related to the class of the image.
 - The sparsity of the activations is increasing with the depth of the layer: in the first layer, all filters are activated by the 
 input image, but in the following layers more and more filters are blank. This means that the pattern encoded by the filter isn't found in the input image.
  
-  -------------------------------------------------------------
+-------------------------------------------------------------
   
 18. Text processing, converting text to sequence or one hot encoded arrays:
   
@@ -357,15 +356,15 @@ word_index = tokenizer.word_index # get the token dictionary
 
 
 
-  -------------------------------------------------------------
+-------------------------------------------------------------
   
-  19. Pad the sequence such that each sample is of same length:
+19. Pad the sequence such that each sample is of same length:
     
 from keras import preprocessing
 x_train = preprocessing.sequence.pad_sequences(x_train, maxlen=maxlen) # pad the integer sequence with some length =maxlen, larger sequence are dropped smaller one are padded with 0
 x_test = preprocessing.sequence.pad_sequences(x_test, maxlen=maxlen)
 
-  -------------------------------------------------------------
+-------------------------------------------------------------
  
 20. Use Embedding layer:
   
@@ -376,9 +375,9 @@ from keras.layers import Embedding
 # and the dimensionality of the embeddings, here 64.
 embedding_layer = Embedding(1000, 64) # for 1000 tokens represent each token with a 64 dim vector
 
-  -------------------------------------------------------------
+-------------------------------------------------------------
   
-  21. Use a pre trained embedding:
+21. Use a pre trained embedding:
     
 from keras.models import Sequential
 from keras.layers import Embedding, Flatten, Dense
@@ -393,7 +392,7 @@ model.summary()
 model.layers[0].set_weights([embedding_matrix]) # set the pre trained embedding in the first layer
 model.layers[0].trainable = False # set the training of this to be false
 
-  -------------------------------------------------------------
+-------------------------------------------------------------
   
   
 22. For using custom embedding below is the kind of network:
@@ -422,9 +421,9 @@ no of words, embedding_dim. For ex if you have 5 words in a sequence then your s
 
 * When you pass the above output into a RNN it will process this sequence one at a time such that at every timestep it takes one sequence 
 and use that to calculate output which is then fed as a input to next sequence and this happens for the amaount of sequence length.
-   -------------------------------------------------------------
+-------------------------------------------------------------
   
-  24. SimpleRNN
+24. SimpleRNN
   
 from keras.models import Sequential
 from keras.layers import Embedding, SimpleRNN
@@ -437,9 +436,9 @@ model.add(SimpleRNN(32))  # This last layer only returns the last outputs.
 model.summary()
   
   Simple Rnn suffers from the problem of vanishing gradient and cannot learn long term temporal dependency and hence are not that useful
-    -------------------------------------------------------------
+-------------------------------------------------------------
     
-    25. LSTM
+25. LSTM
    
   
  The lstm consist of a long term memory and short term memory along with multiple gates like use gate ,forget gate , remember gate etc which 
@@ -459,9 +458,9 @@ history = model.fit(input_train, y_train,
                     batch_size=128,
                     validation_split=0.2)
     
-    -------------------------------------------------------------
+-------------------------------------------------------------
 
-  26. When you define an LSTM,RNN,GRU layer it takes a param which is the no of units , so let say that the number of unit=32 which means that 
+26. When you define an LSTM,RNN,GRU layer it takes a param which is the no of units , so let say that the number of unit=32 which means that 
   you are going to have 32 neurons in that layer and  what will get output from that layer will have one of the dimersion equal to 32 for example in a
   simple rnn wirth just one sample you will have input of shape (no_of_timesteps/no_of_sequences, input_features/embedding vector) , the 
   state matric that gets computed and used at every timestep will be of shape (32/no_of_units_output_features), weight matrix W will be of shape
@@ -473,24 +472,24 @@ history = model.fit(input_train, y_train,
   recurrent cells we get ouput of shape (batch_size ,num_units) which does not require any flattening for upstream dense layer.
                                                                 
   
-     -------------------------------------------------------------
+-------------------------------------------------------------
   
-  27. Three advance technique to increase the performance of your netwrok is :
+27. Three advance technique to increase the performance of your netwrok is :
     
   -Recurrent dropout, a specific, built-in way to use dropout to fight overfitting in recurrent layers.
   -Stacking recurrent layers, to increase the representational power of the network (at the cost of higher computational loads).
   -Bidirectional recurrent layers, which presents the same information to a recurrent network in different ways, increasing accuracy and mitigating forgetting issues.
   
-       -------------------------------------------------------------
+-------------------------------------------------------------
    
-  28. To create a generator for a time series data....refer to the below notebook:
+28. To create a generator for a time series data....refer to the below notebook:
     
   https://github.com/fchollet/deep-learning-with-python-notebooks/blob/master/6.3-advanced-usage-of-recurrent-neural-networks.ipynb
   
   
-       -------------------------------------------------------------
+-------------------------------------------------------------
     
- 29. Droput regularisation in GRU/LSTM includes a dropout and recurrent_droput:
+29. Droput regularisation in GRU/LSTM includes a dropout and recurrent_droput:
   
 from keras.models import Sequential
 from keras import layers
@@ -502,9 +501,9 @@ model.add(layers.Dense(1))
 model.compile(optimizer=RMSprop(), loss='mae')
 history = model.fit_generator(train_gen,steps_per_epoch=500,epochs=40,validation_data=val_gen,validation_steps=val_steps)
  
-         -------------------------------------------------------------
+-------------------------------------------------------------
    
- 30. Other way of comabting overfitting in LSTM/GRU is by increasing the capacity of your netwrok by stacking more layers:
+30. Other way of comabting overfitting in LSTM/GRU is by increasing the capacity of your netwrok by stacking more layers:
   
   model = Sequential()
 model.add(layers.GRU(32,
@@ -517,9 +516,9 @@ model.add(layers.GRU(64, activation='relu',
                      recurrent_dropout=0.5))
 model.add(layers.Dense(1))
 
-       -------------------------------------------------------------
+-------------------------------------------------------------
   
-  31. The third technique that can reduce overfitting in some cases is to use bidirectional recurrent meural network, we know that rnn
+31. The third technique that can reduce overfitting in some cases is to use bidirectional recurrent meural network, we know that rnn
   c\are capable of extracting patterns when we have order dependent or time dependent information. NLP domain is more order dependent and 
   time series is more time dependent.
   
