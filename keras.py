@@ -577,7 +577,8 @@ model.add(layers.Conv1D(32, 5, activation='relu'))
 model.add(layers.GRU(32, dropout=0.1, recurrent_dropout=0.5))
 model.add(layers.Dense(1))
 
-    
+------------------------------------------------------------
+
 34. The sequential model makes the assumption that the network you want to create has one input and one output and it consist of a linear stack 
 of layers. This setup worked for most of the network but for more advanced setup we might have n/w taking multiple inputs, branching out , looking
 more like a graph.You can have networks with multiple inputs , imagine a hybrid network you have a numerical data that you want to pass directly
@@ -599,6 +600,62 @@ model.summary()
 model.compile(.....)
 model.fit(.....)
 
+------------------------------------------------------------
 
+35. To speed up the computation of the Convnets there are different varaition of convnets that you can consider:
+  
+  -Dilated Kernels- A 3x3 kernel with a dilation rate of 2 will have the same field of view as a 5x5 kernel, while only using 9 parameters.
+                    Imagine taking a 5x5 kernel and deleting every second column and row.
+  -Spatial Seperable Kernel- A spatial separable convolution simply divides a kernel into two, smaller kernels. The most common case would 
+                              be to divide a 3x3 kernel into a 3x1 and 1x3 kernel. The main issue with the spatial separable convolution is 
+                              that not all kernels can be “separated” into two, smaller kernels.
+  -Depthwise Separable Convolutions- This involve the depthwise convolution and the pointwise convolution. We do so by using 3 kernels of shape 5x5x1
+                                     Each 5x5x1 kernel iterates 1 channel of the image (note: 1 channel, not all channels), getting the scalar products 
+                                      of every 25 pixel group, giving out a 8x8x1 image. Stacking these images together creates a 8x8x3 image.
+                                      Therefore, we iterate a 1x1x3 kernel through our 8x8x3 image, to get a 8x8x1 image. We can create 256 1x1x3 
+                                      kernels that output a 8x8x1 image each to get a final image of shape 8x8x256. 12x12x3 — (5x5x1x3) — > (1x1x3x256) — >12x12x256.
+                                      the main difference is this: in the normal convolution, we are transforming the image 256 times. And every transformation uses up 
+                                      5x5x3x8x8=4800 multiplications. In the separable convolution, we only really transform the image once — in the depthwise convolution.
+                                      Then, we take the transformed image and simply elongate it to 256 channels. Without having to transform the image over and over again, 
+                                       we can save up on computational power.
+                                      https://towardsdatascience.com/a-basic-introduction-to-separable-convolutions-b99ec3102728
+                                      https://towardsdatascience.com/types-of-convolutions-in-deep-learning-717013397f4d
+layers.SeperableConv2D(32, (3,3), activation="relu", padding="same"......)
+
+------------------------------------------------------------
+
+36. Btach normalisation ensures that your data gets normalised as it passes through the layers , can be used with cnn, dense, rnn
+
+from keras.layers.normalization import BatchNormalization
+
+# instantiate model
+model = Sequential()
+
+# we can think of this chunk as the input layer
+model.add(Dense(64, input_dim=14, init='uniform'))
+model.add(BatchNormalization())
+model.add(Activation('tanh'))
+model.add(Dropout(0.5))
+
+
+------------------------------------------------------------
+
+37. Hyperas, HyperOpt are great tools for performing hyperparameter optimisation and integrates with keras. Its good to also use enseble
+techniques with DL model, one combination that worked well was combining (randomForest/GradinetBoosting, deep neural n/w)
+
+------------------------------------------------------------
+
+38. You can speed up the model generation time and the understanding by implementing callbacks function which are functions that are going 
+to perform certain task while the model is running for example doing spmething after every epoch, or after evebry batch. Keras provides various
+callback which could be very useful:
+  
+* BaseLogger-Callback that accumulates epoch averages of metrics.
+* ModelCheckpoint- Save the model after every epoch. keras.callbacks.ModelCheckpoint(filepath, monitor='val_loss', verbose=0, save_best_only=False, save_weights_only=False, mode='auto', period=1)
+* EarlyStopping - Stop training when a monitored quantity has stopped improving. keras.callbacks.EarlyStopping(monitor='val_loss', min_delta=0, patience=0, verbose=0, mode='auto', baseline=None, restore_best_weights=False)
+* ReduceLROnPlateau- Reduce learning rate when a metric has stopped improving.
+* TensorBoard -This callback writes a log for TensorBoard, which allows you to visualize dynamic graphs of your training and test metrics, 
+                as well as activation histograms for the different layers in your model.
+  
+In the call to mode.fit you pass the callbacks=[] list of callback functions that you have defined
 
 
