@@ -436,10 +436,14 @@ model.add(SimpleRNN(32, return_sequences=True))
 model.add(SimpleRNN(32))  # This last layer only returns the last outputs.
 model.summary()
   
+  Simple Rnn suffers from the problem of vanishing gradient and cannot learn long term temporal dependency and hence are not that useful
     -------------------------------------------------------------
     
     25. LSTM
-    
+   
+  
+ The lstm consist of a long term memory and short term memory along with multiple gates like use gate ,forget gate , remember gate etc which 
+continously keep updating the long term and short term memory which enable it to capture long term dependency 
  from keras.layers import LSTM
 
 model = Sequential()
@@ -456,3 +460,96 @@ history = model.fit(input_train, y_train,
                     validation_split=0.2)
     
     -------------------------------------------------------------
+
+  26. When you define an LSTM,RNN,GRU layer it takes a param which is the no of units , so let say that the number of unit=32 which means that 
+  you are going to have 32 neurons in that layer and  what will get output from that layer will have one of the dimersion equal to 32 for example in a
+  simple rnn wirth just one sample you will have input of shape (no_of_timesteps/no_of_sequences, input_features/embedding vector) , the 
+  state matric that gets computed and used at every timestep will be of shape (32/no_of_units_output_features), weight matrix W will be of shape
+  (output_features/32, input_features) , U which is state weights is of size (output_features/32, output_features/32) and bias b is of shape
+  (output_features/32). In a simple RNN the computation will be like output_t= activation(W*input_t+U.state_t+b0).
+  
+  In general embedding matrix gived 3d tensor of size(batch_size, timesteps, features) which gets fed in LSTM/GRU/RNN and generates output of shape
+  (batch_size,timesteps ,num_units) in case return_sequence or  (batch_size ,num_units) in normal case. Generally from the last layer of these 
+  recurrent cells we get ouput of shape (batch_size ,num_units) which does not require any flattening for upstream dense layer.
+                                                                
+  
+     -------------------------------------------------------------
+  
+  27. Three advance technique to increase the performance of your netwrok is :
+    
+  -Recurrent dropout, a specific, built-in way to use dropout to fight overfitting in recurrent layers.
+  -Stacking recurrent layers, to increase the representational power of the network (at the cost of higher computational loads).
+  -Bidirectional recurrent layers, which presents the same information to a recurrent network in different ways, increasing accuracy and mitigating forgetting issues.
+  
+       -------------------------------------------------------------
+   
+  28. To create a generator for a time series data....refer to the below notebook:
+    
+  https://github.com/fchollet/deep-learning-with-python-notebooks/blob/master/6.3-advanced-usage-of-recurrent-neural-networks.ipynb
+  
+  
+       -------------------------------------------------------------
+    
+ 29. Droput regularisation in GRU/LSTM includes a dropout and recurrent_droput:
+  
+from keras.models import Sequential
+from keras import layers
+from keras.optimizers import RMSprop
+
+model = Sequential()
+model.add(layers.GRU(32, dropout=0.2,recurrent_dropout=0.2,input_shape=(None, float_data.shape[-1]))) # notice the 2 droputs that we used here
+model.add(layers.Dense(1))
+model.compile(optimizer=RMSprop(), loss='mae')
+history = model.fit_generator(train_gen,steps_per_epoch=500,epochs=40,validation_data=val_gen,validation_steps=val_steps)
+ 
+         -------------------------------------------------------------
+   
+ 30. Other way of comabting overfitting in LSTM/GRU is by increasing the capacity of your netwrok by stacking more layers:
+  
+  model = Sequential()
+model.add(layers.GRU(32,
+                     dropout=0.1,
+                     recurrent_dropout=0.5,
+                     return_sequences=True,
+                     input_shape=(None, float_data.shape[-1])))
+model.add(layers.GRU(64, activation='relu',
+                     dropout=0.1, 
+                     recurrent_dropout=0.5))
+model.add(layers.Dense(1))
+
+       -------------------------------------------------------------
+  
+  31. The third technique that can reduce overfitting in some cases is to use bidirectional recurrent meural network, we know that rnn
+  c\are capable of extracting patterns when we have order dependent or time dependent information. NLP domain is more order dependent and 
+  time series is more time dependent.
+  
+    A bidirectional RNN exploits the order-sensitivity of RNNs: it simply consists of two regular RNNs, such as the GRU or LSTM layers 
+    that you are already familiar with, each processing input sequence in one direction (chronologically and antichronologically), 
+    then merging their representations. By processing a sequence both way, a bidirectional RNN is able to catch patterns that may have 
+    been overlooked by a one-direction RNN.
+    
+    Incase of time series you have temporal dependncy where processing chronological order makes more sense rather than rever order since recent past
+    makes more sense for forecasting future information. Thus bidirectional rnn are not very great in processing time series but can show good 
+    performance for other task specifically in NLP.
+    
+    Thus, remarkably, on such a text dataset, reversed-order processing works just as well as chronological processing, confirming our hypothesis 
+    that, albeit word order does matter in understanding language, which order you use isn't crucial. Importantly, a RNN trained on 
+    reversed sequences will learn different representations than one trained on the original sequences.
+    
+from keras import backend as K
+K.clear_session()
+model = Sequential()
+model.add(layers.Embedding(max_features, 32))
+model.add(layers.Bidirectional(layers.LSTM(32))) # pass in the lstm instance, a new instance to process the data in reverse order will be automatically created
+model.add(layers.Dense(1, activation='sigmoid'))
+
+model.compile(optimizer='rmsprop', loss='binary_crossentropy', metrics=['acc'])
+history = model.fit(x_train, y_train, epochs=10, batch_size=128, validation_split=0.2)    
+    
+    
+    
+    
+    
+    
+    
+    
