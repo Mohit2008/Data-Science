@@ -578,3 +578,27 @@ model.add(layers.GRU(32, dropout=0.1, recurrent_dropout=0.5))
 model.add(layers.Dense(1))
 
     
+34. The sequential model makes the assumption that the network you want to create has one input and one output and it consist of a linear stack 
+of layers. This setup worked for most of the network but for more advanced setup we might have n/w taking multiple inputs, branching out , looking
+more like a graph.You can have networks with multiple inputs , imagine a hybrid network you have a numerical data that you want to pass directly
+to dense layer, you also have text data that you would like to pass through LSTM and you also have image data that you would like to pass through
+the convolution layer , now you can do this with a sequention layer since you now have 3 inputs so you would need to make use of functiona 
+api of keras. Also you can have a n/w with multiple output given a input , or you could have netwroks like inception and residual in which case
+you need function api
+
+from keras.models import Model
+from keras import Input
+from keras import layers
+
+input_tensor = Input(shape=(64,))
+x= layers.Dense(32, activation="relu") (input_tensor)
+x= layers.Dense(32, activation="relu") (x)
+output_tensor= layers.Dense(10, activation="softmax") (x)
+model=Model(input_tensor,output_tensor)
+model.summary()
+model.compile(.....)
+model.fit(.....)
+
+
+
+
