@@ -126,7 +126,9 @@ plt.show()
 *********************************************************************************************
 3. Plot precision-recall curve
   
-  # precision-recall curve
+from sklearn.metrics import auc
+from sklearn.metrics import precision_recall_curve
+
 def plot_precision_recall(recall,precision ):
     plt.step(recall, precision, color = 'b', alpha = 0.2,
              where = 'post')
@@ -140,6 +142,8 @@ def plot_precision_recall(recall,precision ):
     plt.ylabel('Precision')
     plt.title('Precision Recall Curve')
     plt.show();
+    # calculate precision-recall AUC
+    auc = auc(recall, precision)
  
 y_pred = log_cfl.predict(X_test)
 y_score = log_cfl.decision_function(X_test)  # get the value from the classifier function
