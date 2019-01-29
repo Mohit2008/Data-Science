@@ -1,5 +1,5 @@
 1. Learning Curves
-
+# for regression use negative mean square error as the scoring criteria and for classification you can use accuracy
 def plot_learning_curve(estimator, title, X, y, ylim=None, cv=None,
                         n_jobs=None, train_sizes=np.linspace(.1, 1.0, 5)):
     """
