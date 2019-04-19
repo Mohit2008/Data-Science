@@ -658,6 +658,7 @@ callback which could be very useful:
   
 In the call to mode.fit you pass the callbacks=[] list of callback functions that you have defined
 
+------------------------------------------------------------
 
 39. To visualize the activations generated from each of the conv layer of your model you can use the below code:
   
@@ -698,3 +699,29 @@ for x in range(0,4):
   f3 = activation_model.predict(test_images[THIRD_IMAGE].reshape(1, 28, 28, 1))[x]
   axarr[2,x].imshow(f3[0, : , :, CONVOLUTION_NUMBER], cmap='inferno')
   axarr[2,x].grid(False)
+
+ ------------------------------------------------------------
+
+40. Use the history object to visualise the model performance:
+  
+acc      = history.history[     'acc' ]
+val_acc  = history.history[ 'val_acc' ]
+loss     = history.history[    'loss' ]
+val_loss = history.history['val_loss' ]
+
+epochs   = range(len(acc)) # Get number of epochs
+
+#------------------------------------------------
+# Plot training and validation accuracy per epoch
+#------------------------------------------------
+plt.plot  ( epochs,     acc )
+plt.plot  ( epochs, val_acc )
+plt.title ('Training and validation accuracy')
+plt.figure()
+
+#------------------------------------------------
+# Plot training and validation loss per epoch
+#------------------------------------------------
+plt.plot  ( epochs,     loss )
+plt.plot  ( epochs, val_loss )
+plt.title ('Training and validation loss'   )
