@@ -659,3 +659,42 @@ callback which could be very useful:
 In the call to mode.fit you pass the callbacks=[] list of callback functions that you have defined
 
 
+39. To visualize the activations generated from each of the conv layer of your model you can use the below code:
+  
+ Here we have a conv model which has following layers:
+  
+ [<tensorflow.python.keras.layers.convolutional.Conv2D at 0x7f95808af668>,
+ <tensorflow.python.keras.layers.pooling.MaxPooling2D at 0x7f95208b3080>,
+ <tensorflow.python.keras.layers.convolutional.Conv2D at 0x7f95208b3630>,
+ <tensorflow.python.keras.layers.pooling.MaxPooling2D at 0x7f95208b3a20>,
+ <tensorflow.python.keras.layers.core.Flatten at 0x7f95208b3d30>,
+ <tensorflow.python.keras.layers.core.Dense at 0x7f95208480f0>,
+ <tensorflow.python.keras.layers.core.Dense at 0x7f9520848630>]
+  
+import matplotlib.pyplot as plt
+
+FIRST_IMAGE=3
+SECOND_IMAGE=7
+THIRD_IMAGE=26
+CONVOLUTION_NUMBER = 4 # which filter you want to visualize
+plt.imshow(test_images[FIRST_IMAGE].reshape(28,28))
+plt.show()
+plt.imshow(test_images[SECOND_IMAGE].reshape(28,28))
+plt.show()
+plt.imshow(test_images[THIRD_IMAGE].reshape(28,28))
+plt.show()
+f, axarr = plt.subplots(3,4)
+from tensorflow.keras import models
+layer_outputs = [layer.output for layer in model.layers] # get the ouput from all the 7 layers 
+activation_model = tf.keras.models.Model(inputs = model.input, outputs = layer_outputs)
+for x in range(0,4):
+  # Visualize the first 4 layers which contains the conv and max pooling layers
+  f1 = activation_model.predict(test_images[FIRST_IMAGE].reshape(1, 28, 28, 1))[x]
+  axarr[0,x].imshow(f1[0, : , :, CONVOLUTION_NUMBER], cmap='inferno')
+  axarr[0,x].grid(False)
+  f2 = activation_model.predict(test_images[SECOND_IMAGE].reshape(1, 28, 28, 1))[x]
+  axarr[1,x].imshow(f2[0, : , :, CONVOLUTION_NUMBER], cmap='inferno')
+  axarr[1,x].grid(False)
+  f3 = activation_model.predict(test_images[THIRD_IMAGE].reshape(1, 28, 28, 1))[x]
+  axarr[2,x].imshow(f3[0, : , :, CONVOLUTION_NUMBER], cmap='inferno')
+  axarr[2,x].grid(False)
