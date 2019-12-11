@@ -39,3 +39,66 @@ to logistic where as l2 is used in svm.
 
 Logistic hyper- C, penalty , multiclass 
 SVC- C, kernel, gamma
+
+
+6. Voting Classifier uses ensemble technique to combine multiple predictors(Same data multiple estimators)
+
+from sklearn.ensemble import VotingClassifier
+lr = LogisticRegression(random_state=SEED)
+knn = KNN(n_neighbors=27)
+dt = DecisionTreeClassifier(min_samples_leaf=0.13, random_state=SEED)
+# Define the list classifiers
+classifiers = [('Logistic Regression', lr), ('K Nearest Neighbours', knn), ('Classification Tree', dt)]
+vc = VotingClassifier(estimators=classifiers)  
+vc.fit(X_train, y_train)   
+y_pred = vc.predict(X_test)# pass the list of tuples that have the indivisual estimators
+
+
+7. BaggingClassifier (same estimator , multiple dataset created using bootstrap aggregation)
+
+dt = DecisionTreeClassifier(random_state=1)
+bc = BaggingClassifier(base_estimator=dt, n_estimators=50, random_state=1)
+bc.fit(X_train, y_train)
+y_pred = bc.predict(X_test)
+acc_test = accuracy_score(y_test, y_pred)
+print('Test set accuracy of bc: {:.2f}'.format(acc_test)) 
+
+
+8. You can estimate the performance of the enseble model using Out of Bag instances as on an average 63% of 
+training samples are sampled at any time and 37% constitute the OOB instances when using bootstraping . 
+The model gets trained on the bootstraped samples and evaluated on the OOB and then you average out the OOB 
+scores for all the estimators you have in your ensemble.
+
+bc = BaggingClassifier(base_estimator=dt,n_estimators=50,oob_score=True,random_state=1)
+bc.fit(X_train, y_train)
+bc.oob_score_
+
+It is generally seen that the OOB score is very close to the score on the test set this 
+OOB serves as a great way of providing the generalisation capability of the model.
+
+9. Random forest is an ensemble technique that uses decision tree as base estimator , each estimator trained on a 
+diff bootstrap sample having the same size as the training set, RF further introduces randomisation in training of 
+individual trees by picking up d features at each node without replacement.
+
+
+10. IN boosting you can do Adaboost which weights the indivisual observation , Gradient boosting which uses the residuals 
+to train succesive models or you can use Sorchastic Gradient boosting which submsamples the data without replacement for 
+each estimatior and also the features at each split to create more 
+diversity among the learners
+
+from sklearn.ensemble import GradientBoostingRegressor
+sgbr = GradientBoostingRegressor(max_depth=4, 
+            subsample=0.9, # use 90% of training data for each predictor
+            max_features=0.75, # use 75% of features at each split
+            n_estimators=200,                                
+            random_state=2)  # this will create a Sorchastic gradient boosting algo , if you remove submsaple and max_feature you end up Gradient boosting
+
+11. Decision tree will have categorical or cotninous value in the leaf depending upon the task (reg or classification) 
+but in CART each leaf always contain a real valued score which can be later converted/thresholded to categories for a 
+classification problem
+
+
+
+
+
+
