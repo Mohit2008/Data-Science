@@ -109,3 +109,30 @@ kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=7)
 grid_search = GridSearchCV(model, param_grid, scoring="neg_log_loss", n_jobs=1, cv=kfold)
 result = grid_search.fit(X, label_encoded_y)
 print("Best: %f using %s" % (grid_result.best_score_, grid_result.best_params_))
+
+
+
+#----------------------------------------------------------------------------------
+Xgboost cross validation using built in 
+
+import xgboost as xgb 
+churn_dmatrix = xgb.DMatrix(data=X, label=y) # xgboost own optimised data structure
+params = {"objective":"reg:logistic", "max_depth":3}
+cv_results = xgb.cv(dtrain=churn_dmatrix, params=params, nfold=3, num_boost_round=5, metrics="error", as_pandas=True, seed=123) # boost_round means no of trees and metric can have any option like error , auc etc...
+
+#-------------------------------------------------------
+Common loss functions in Xgboost
+
+reg:linear # for linear regression
+reg:logistic # for classification with output as classes
+binary:logistic # for get prob as output
+
+
+- You can use 2 styles for Xgboost :
+    - Sklearn api - xgb.XGBRegressor(objective="reg:linear", n_estimator=10,seed=10) # this will always use tree as base learner
+    - Learner api with linear base learners :
+                            DM_train = Xgb.DMatrix(data=Xtrain, label =ytrain)
+                            params ={"booster": "gblinear", "objective": "reg:linear"}
+                            xgb.train(DM_train, params , num_boost_round =10)
+                            xgb.predict()
+
