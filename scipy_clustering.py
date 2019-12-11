@@ -41,5 +41,32 @@ point/clusters , they are of different types:
     
 5. fcluster takes in distance matrix generated using linkage method , num of clusters needed and criterion to decide threhold to
 form clusters.
+
+
+6. to decide upon the no of clusters you can create dendograms
+
+from scipy.cluster.hierarchy import dendrogram
+from scipy.cluster.hierarchy import linkage, fcluster
+distance_matrix = linkage(comic_con[['x_scaled', 'y_scaled']], method = 'ward', metric = 'euclidean') 
+dn = dendrogram(distance_matrix)
+plt.show()
+   
+    
+7. Heririchal clustering is has a lot of time complexity which increases in a quadratic manner as the no of observation increases
+
+8. In kmeans clustering you can find the best value for the no of clusters using the elbow plot which si constructed by
+measureing the intertia/distortions as a function of the no of clusters. Inertia/distortions can be defined as 
+sum of squares of distnaces of points from its cluster centers, this value dec with inc no of clusters and becomes 0 when
+no of clusters equal no of observations. If the data is uniformly distributed then elbow plot might not help and it gives wierd
+plots
+
+Other menthods to do that is using Gap statistics and average sihouette
+
+
+9. Challenges with kmeans:
+    - Prior knowledge of k
+    - Impact of seeds, initilisation effects the way clusters are generated
+    - Formation of equal sized clusters to reduce distortions
+    
     
     
