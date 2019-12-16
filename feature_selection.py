@@ -128,3 +128,95 @@ pd.DataFrame({"year": column_1.dt.year,
               "weekday": column_1.dt.weekday,
               "quarter": column_1.dt.quarter,
              })
+
+
+###########Data camp
+
+11. To perform feature selection you can simply drop features which have ~0 variance , you can drop features with a single 
+class , you can drop features which  are heavliy correlated or you can drop features which are constant, all of these 
+information can be derived using EDA on your dataset .
+
+12. Feature selection basically involves picking up features whereas feature extraction involves combining original features 
+in meaning full way like what PCA does
+
+
+13. Before using the VarianceThreshold selector from sklearn you should try to normalise your dataset by diving by mean 
+vector othewise you would have features with unequal variance and you wont get the right set of value:
+
+from sklearn.feature_selection import VarianceThreshold
+sel = VarianceThreshold(threshold=0.001)
+sel.fit(head_df / head_df.mean())
+mask = sel.get_support()
+reduced_df = head_df.loc[:, mask]
+
+
+14. Above we saw ways to select features based on there indivisual property (there variance , missing property , constants etc), 
+we can also check how the features relate to one another for which we can use corelation matrix 
+
+15. To better visualize the heatmap with the corelation matrix you can create a mask:
+corr = ansur_df.corr()
+mask = np.triu(np.ones_like(corr, dtype=bool))
+sns.heatmap(corr, mask=mask, cmap=cmap, center=0, linewidths=1, annot=True, fmt=".2f")
+plt.show()
+
+
+To drop features having high corr:
+
+corr_matrix = ansur_df.corr().abs()
+mask = np.triu(np.ones_like(corr_matrix, dtype=bool))
+tri_df = corr_matrix.mask(mask)
+to_drop = [c for c in tri_df.columns if any(tri_df[c] >  0.95)]
+reduced_df = ansur_df.drop(to_drop, axis=1)
+print("The reduced dataframe has {} columns.".format(reduced_df.shape[1]))
+
+
+16. One of the way to takle the problem of feature selection is using the model predictions , for ex we can fit a linear model 
+and get the weight and drop the one with the smallest value , we can continue to do the same until we get desired no of 
+features , you can use this in sklearn using RFE(Recurrsive feature elimination)
+
+
+17. You can also use trees who have the inherent nature of selecting the features by calculating the feature importance and 
+you can create a mask using the theresholding values , recommended way is to do that reccursively using RFE
+
+
+18 In RFE you can provide the step parameter which tells that in each iterations how many features to drop setting a 
+value to 5 will drop 5 features in each iteration
+
+19. You can also use Lasso() to perform feature selection as it will force most of the insignificant features to end up being 
+0 .To pick up best regularisation value of Lasso you can use the LassoCV() estimator that will give the best value of reg coffecitent based upon the cross validated set.
+
+
+
+20. A novel way to perform feature selection is to combine the feature selection capability from multiple models and vote 
+which features to keep for example if we have 3 voters we can keep feature which got 2 or more than 2 votes 
+
+from sklearn.linear_model import LassoCV
+from sklearn.feature_selection import RFE
+from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.ensemble import RandomForestRegressor
+
+lcv = LassoCV() # model 1 for selecting k best features
+lcv.fit(X_train, y_train)
+lcv_mask = lcv.coef_!=0 # get all coff that is not 0
+
+rfe_gb = RFE(estimator=GradientBoostingRegressor(), 
+             n_features_to_select=10, step=3, verbose=1) # eliminate feature using gbregressor 
+gb_mask = rfe_gb.support_ # get the support for feratures selected
+
+rfe_rf = RFE(estimator=RandomForestRegressor(), 
+             n_features_to_select=10, step=3, verbose=1)
+rf_mask = rfe_rf.support_ # get the support for features selected
+
+votes = np.sum([lcv_mask, rf_mask, gb_mask], axis=0) # sum up the votes for each features
+meta_mask = votes==3 # select features that have 3 votes
+X_reduced = X.iloc[:, meta_mask] # create a subset of data with features that got 3 votes
+
+
+21. You can use RFECV for automatically select features
+
+svc = SVC(kernel="linear")
+rfecv = RFECV(estimator=svc, step=1, cv=StratifiedKFold(2), scoring='accuracy')
+rfecv.fit(X, y)
+print("Optimal number of features : %d" % rfecv.n_features_)
+
+
