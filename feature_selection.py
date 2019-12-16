@@ -249,3 +249,6 @@ there would be some loss in the data.
 
 PCA(n_components=0.8) # preserve 80% of variance
 
+24. One of the ways of reducing the features can also be to aggregate value of an observation accross multiple columns and use that 
+instead of the original features for example you can take the mean of temperatures recorded on day1 to day 10 and use that 
+instead of 10 columns.
