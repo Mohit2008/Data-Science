@@ -220,3 +220,32 @@ rfecv.fit(X, y)
 print("Optimal number of features : %d" % rfecv.n_features_)
 
 
+22. You can extrcat relevant information from PCA like the explained variance ratio and components . Components can be used to 
+understand how each features are combined to form a PC , this helps us understand the roles of features in indivisual PC
+
+# Build the pipeline
+pipe = Pipeline([('scaler', StandardScaler()),
+        		 ('reducer', PCA(n_components=2))])
+
+# Fit it to the dataset and extract the component vectors
+pipe.fit(poke_df)
+vectors = pipe.steps[1][1].components_.round(2) # get the components (weights in which original features are combined)
+
+# Print feature effects
+print('PC 1 effects = ' + str(dict(zip(poke_df.columns, vectors[0]))))
+print('PC 2 effects = ' + str(dict(zip(poke_df.columns, vectors[1]))))
+
+print(pipe.steps[1][1].explained_variance_ratio_) # explained var ratio for each PC
+print(pipe.steps[1][1].explained_variance_ratio_.cumsum()) # cumulative sum of explained var ratio
+
+
+23. n_component param for PCA can either take integer value which means no of features to keep or a float value between 0 and 1 which 
+specify how of the variance in the original data should be preserved. Even though there is no single right way of getting the 
+no of components that should work for your use case , you can conisder drawing an elbow plot of the explained varaince and 
+pick up that many no of components where you see an elbow.
+
+You can also do an inverse_transform of your principal components to get back the original data in original dimension , although 
+there would be some loss in the data.
+
+PCA(n_components=0.8) # preserve 80% of variance
+
