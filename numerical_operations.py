@@ -100,3 +100,11 @@ for df in [X_train, X_test, submission]:
     for var in ['LotFrontage', 'GarageYrBlt']:
         df[var+'_NA'] = np.where(df[var].isnull(), 1, 0)
         df[var].fillna(X_train[var].median(), inplace=True) 
+
+        
+# 12 Replace infrequent categories
+countries = so_survey_df['Country']
+country_counts = countries.value_counts() # Get the counts of each category
+mask = countries.isin(country_counts[country_counts < 10].index) # Create a mask for only categories that occur less than 10 times
+countries[mask] = 'Other' # Label all other categories as Other
+
