@@ -98,7 +98,9 @@ but in CART each leaf always contain a real valued score which can be later conv
 classification problem
 
 
-
+12. For hyper parameter tuning you can use either Grid search , Random search or Bayesian optimisation . After doing any of those
+you can visualise the results of different params to study the effect on your model. Gridsearch is exhaustive while. Use 
+these with a cv object which could be a simple Kfold or StratifiedKfold and pass it to GridSearchCV or RandomSearchCV
 
 
 
