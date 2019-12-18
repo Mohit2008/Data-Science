@@ -118,4 +118,11 @@ mask = countries.isin(country_counts[country_counts < 10].index) # Create a mask
 countries[mask] = 'Other' # Label all other categories as Other
 
 
+# 13 You can perform method chaining in pandas when trying to apply multiple methods on a given columns
+so_survey_df['RawSalary'] = so_survey_df['RawSalary']\
+                              .str.replace(',', '')\
+                              .str.replace('$', '')\
+                              .str.replace('£', '')\
+                              .astype('float')
+
 
