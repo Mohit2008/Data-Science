@@ -19,6 +19,15 @@ X_test['Age_disc_label'] = pd.cut(x = X_test.Age, bins=intervals, labels=labels)
 labels = ['0-20', '20-40', '40-60', '>60']
 data['Age_buckets_labels'] = pd.cut(data.Age, bins=buckets, labels = labels, include_lowest=True)
 
+# or
+# Bin the continuous variable ConvertedSalary into 5 bins
+so_survey_df['equal_binned'] = pd.cut(so_survey_df['ConvertedSalary'], 5) # get the range of bins using this command
+
+bins = [-np.inf, 10000, 50000, 100000, 150000, np.inf] # use the above to study the bin intervals and create this list
+labels = ['Very low', 'Low', 'Medium', 'High', 'Very high'] # Bin labels
+so_survey_df['boundary_binned'] = pd.cut(so_survey_df['ConvertedSalary'], 
+                                         bins, labels=labels) # Bin the continuous variable ConvertedSalary using these boundaries
+
 # with decison tree
 
 from sklearn.tree import DecisionTreeClassifier, export_graphviz
@@ -107,4 +116,6 @@ countries = so_survey_df['Country']
 country_counts = countries.value_counts() # Get the counts of each category
 mask = countries.isin(country_counts[country_counts < 10].index) # Create a mask for only categories that occur less than 10 times
 countries[mask] = 'Other' # Label all other categories as Other
+
+
 
