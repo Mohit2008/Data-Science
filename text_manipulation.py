@@ -3,6 +3,8 @@
 from sklearn.feature_extraction.text import CountVectorizer
 import pandas as pd
 vect = CountVectorizer()
+or 
+vect = CountVectorizer(lowercase=True, stop_words='english', ngram_range=(1,2)) # convert to lower case and remove stop words, use unigrams and bigrams
 vect.fit(list_of_messages)
 dtm = vect.transform(list_of_messages)
 pd.DataFrame(dtm.toarray(), columns=vect.get_feature_names())
@@ -98,6 +100,9 @@ a_lemmas = [lemma for lemma in lemmas
 
 pos = [token.pos_ for token in doc] # get the pos tags
 
+# do named entity recognistion
+for ent in doc.ents:
+    print(ent.text, ent.label_)
 
 # 6 Function to preprocess text
 
