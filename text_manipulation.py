@@ -78,3 +78,41 @@ class TfidfEmbeddingVectorizer(object):
 etree_w2v_tfidf = Pipeline([
     ("word2vec vectorizer", TfidfEmbeddingVectorizer(w2v)),
     ("extra trees", ExtraTreesClassifier(n_estimators=200))])
+
+# 5 perform tokenisation using spacy module
+
+import spacy
+nlp = spacy.load('en_core_web_sm') # Load the en_core_web_sm model
+doc = nlp(gettysburg)
+tokens = [token.text for token in doc]# Generate the tokens
+
+or
+
+lemmas = [token.lemma_ for token in doc] # Generate lemmas for the text that has been passed
+
+or
+
+# Remove stopwords and non-alphabetic tokens, and use lemmitisation
+a_lemmas = [lemma for lemma in lemmas 
+            if lemma.isalpha() and lemma not in stopwords]
+
+pos = [token.pos_ for token in doc] # get the pos tags
+
+
+# 6 Function to preprocess text
+
+import spacy
+nlp = spacy.load('en_core_web_sm') # Load the en_core_web_sm model
+# Function to preprocess text
+def preprocess(text):
+    doc = nlp(text, disable=['ner', 'parser']) # Create Doc object
+    lemmas = [token.lemma_ for token in doc] # Generate lemmas
+    a_lemmas = [lemma for lemma in lemmas 
+            if lemma.isalpha() and lemma not in stopwords] # Remove stopwords and non-alphabetic characters
+    return ' '.join(a_lemmas)
+  
+
+ted['transcript'] = ted['transcript'].apply(preprocess) # Apply preprocess to ted['transcript']
+
+# 7 In NLP you can create new features by counting no of chars, counting no of words, get the average word length, count no of
+nouns, count no of pronoun 
