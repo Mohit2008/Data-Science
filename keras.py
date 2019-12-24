@@ -774,3 +774,12 @@ model.fit([input_1, input_2],
           batch_size=2048,
           validation_split=0.1,
           verbose=True)
+
+
+42. You can create a model with multiple outputs 
+
+input_tensor = Input((2,))
+output_tensor_1 = Dense(1, activation='linear', use_bias=False)(input_tensor) # Create the first output
+output_tensor_2 = Dense(1, activation='sigmoid', use_bias=False)(input_tensor) # Create the second output 
+model = Model(input_tensor, [output_tensor_1, output_tensor_2]) # Create a model with 2 outputs
+model.compile(loss=['mean_absolute_error', 'binary_crossentropy'], optimizer=Adam(lr=0.01))
