@@ -725,3 +725,52 @@ plt.figure()
 plt.plot  ( epochs,     loss )
 plt.plot  ( epochs, val_loss )
 plt.title ('Training and validation loss'   )
+
+
+41. You can have the concept of shared layers using keras functional api , you can either share layers or can share a model
+
+# Load the input layer from keras.layers
+from keras.layers import Input
+
+n_teams = unique(games_season['team_1']).shape[0]
+team_lookup = Embedding(input_dim=n_teams,
+                        output_dim=1,
+                        input_length=1,
+                        name='Team-Strength')
+
+teamid_in = Input(shape=(1,))
+strength_lookup = team_lookup(teamid_in) # Lookup the input in the team strength embedding layer
+strength_lookup_flat = Flatten()(strength_lookup) # Flatten the output
+team_strength_model = Model(teamid_in, strength_lookup_flat, name='Team-Strength-Model') # Combine the operations into a single, re-usable model
+
+team_in_1 = Input((1,),name="Team-1-In") # Input layer for team 1
+team_in_2 = Input((1,), name="Team-2-In")# Separate input layer for team 2
+
+team_1_strength = team_strength_model(team_in_1) # Lookup team 1 in the team strength model
+team_2_strength = team_strength_model(team_in_2) # Lookup team 2 in the team strength model
+
+
+You can combine layers in kears in multiple ways (add, subtract, multiply, concatenate). All layers have to have 
+same shape for add , subtract and multiply to work whereas you can use concatenate when you have layers of different size
+
+from keras.layers import Subtract
+
+# Create a subtract layer using the inputs from the previous exercise
+score_diff = Subtract()([team_1_strength, team_2_strength])
+model = Model([team_in_1, team_in_2], score_diff)
+
+# Compile the model
+model.compile('adam', loss='mean_absolute_error')
+
+with such a model with multiple inputs you need to supply a list of inputs when callsing the fit , predict, evaluate methods
+
+input_1 = games_season['team_1']
+input_2 = games_season['team_2']
+
+# Fit the model to input 1 and 2, using score diff as a target
+model.fit([input_1, input_2],
+          games_season['score_diff'],
+          epochs=1,
+          batch_size=2048,
+          validation_split=0.1,
+          verbose=True)
