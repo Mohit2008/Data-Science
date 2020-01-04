@@ -347,3 +347,9 @@ stepwise_model = auto_arima(data, start_p=1, start_q=1,
 
 
 #https://www.kaggle.com/berhag/co2-emission-forecast-with-python-seasonal-arima
+
+
+# https://otexts.com/fpp2/             good resource for studying time series in depth
+
+
+
