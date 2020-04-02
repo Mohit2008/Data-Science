@@ -783,3 +783,17 @@ output_tensor_1 = Dense(1, activation='linear', use_bias=False)(input_tensor) # 
 output_tensor_2 = Dense(1, activation='sigmoid', use_bias=False)(input_tensor) # Create the second output 
 model = Model(input_tensor, [output_tensor_1, output_tensor_2]) # Create a model with 2 outputs
 model.compile(loss=['mean_absolute_error', 'binary_crossentropy'], optimizer=Adam(lr=0.01))
+
+
+43. Notebooks
+
+1. Image Generator + Visualizing the Conv layers for a input and see all the activations/feature maps at once:
+  https://colab.research.google.com/github/lmoroney/dlaicourse/blob/master/Course%201%20-%20Part%208%20-%20Lesson%202%20-%20Notebook.ipynb#scrollTo=i0eAFCzspail
+  https://colab.research.google.com/github/lmoroney/dlaicourse/blob/master/Course%201%20-%20Part%206%20-%20Lesson%202%20-%20Notebook.ipynb
+    
+2. Custom callbacks:
+  https://colab.research.google.com/github/lmoroney/dlaicourse/blob/master/Course%201%20-%20Part%204%20-%20Lesson%204%20-%20Notebook.ipynb
+   
+3 
+
+    
