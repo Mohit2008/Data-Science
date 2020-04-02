@@ -788,7 +788,7 @@ model.compile(loss=['mean_absolute_error', 'binary_crossentropy'], optimizer=Ada
 43. Notebooks
 
 1. Image Generator + Visualizing the Conv layers for a input and see all the activations/feature maps at once:
-  https://colab.research.google.com/github/lmoroney/dlaicourse/blob/master/Course%201%20-%20Part%208%20-%20Lesson%202%20-%20Notebook.ipynb#scrollTo=i0eAFCzspail
+  https://colab.research.google.com/github/lmoroney/dlaicourse/blob/master/Course%201%20-%20Part%208%20-%20Lesson%203%20-%20Notebook.ipynb
   https://colab.research.google.com/github/lmoroney/dlaicourse/blob/master/Course%201%20-%20Part%206%20-%20Lesson%202%20-%20Notebook.ipynb
     
 2. Custom callbacks:
