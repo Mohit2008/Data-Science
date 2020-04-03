@@ -188,8 +188,20 @@ train_generator = train_datagen.flow_from_directory(
 
 validation_generator = test_datagen.flow_from_directory(
         validation_dir,target_size=(150, 150), batch_size=20,class_mode='binary')
+ _____________
   
+If you have data loaded as numpy array:
   
+train_generator=train_datagen.flow(training_images, 
+                                   training_labels, 
+                                   batch_size=512)
+
+validation_generator = validation_datagen.flow(
+    testing_images,
+    testing_labels,
+    batch_size=64
+)
+
 * When every you are using some generator function you will now have to use fir_generator, evaluate_generator, predict_generator which 
 is provided by keras which lets it know that the data has to be generated from a generator function which in our case is ImageDataGenerator:
   
