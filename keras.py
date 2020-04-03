@@ -796,6 +796,6 @@ model.compile(loss=['mean_absolute_error', 'binary_crossentropy'], optimizer=Ada
    
 3. Image Data Augumentation + Transfer Learning
 
-https://colab.research.google.com/github/lmoroney/dlaicourse/blob/master/Course%202%20-%20Part%206%20-%20Lesson%203%20-%20Notebook.ipynb#scrollTo=BMXb913pbvFg
-
+(Binary class) https://colab.research.google.com/github/lmoroney/dlaicourse/blob/master/Course%202%20-%20Part%206%20-%20Lesson%203%20-%20Notebook.ipynb#scrollTo=BMXb913pbvFg
+(Multi-Class) https://colab.research.google.com/github/lmoroney/dlaicourse/blob/master/Course%202%20-%20Part%208%20-%20Lesson%202%20-%20Notebook%20(RockPaperScissors).ipynb#scrollTo=it1c0jCiNCIM
     
