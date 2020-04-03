@@ -794,6 +794,8 @@ model.compile(loss=['mean_absolute_error', 'binary_crossentropy'], optimizer=Ada
 2. Custom callbacks:
   https://colab.research.google.com/github/lmoroney/dlaicourse/blob/master/Course%201%20-%20Part%204%20-%20Lesson%204%20-%20Notebook.ipynb
    
-3 
+3. Image Data Augumentation + Transfer Learning
+
+https://colab.research.google.com/github/lmoroney/dlaicourse/blob/master/Course%202%20-%20Part%206%20-%20Lesson%203%20-%20Notebook.ipynb#scrollTo=BMXb913pbvFg
 
     
