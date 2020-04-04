@@ -870,3 +870,36 @@ files.upload()
 ! cp kaggle.json ~/.kaggle/
 ! chmod 600 ~/.kaggle/kaggle.json
 ! kaggle datasets download --unzip '<username>/<datasetname>'
+
+46. Loading a pre trained embediing and pass it to keras
+
+!wget --no-check-certificate \
+    https://storage.googleapis.com/laurencemoroney-blog.appspot.com/glove.6B.100d.txt \
+    -O /tmp/glove.6B.100d.txt
+embeddings_index = {};
+with open('/tmp/glove.6B.100d.txt') as f:
+    for line in f:
+        values = line.split();
+        word = values[0];
+        coefs = np.asarray(values[1:], dtype='float32');
+        embeddings_index[word] = coefs;
+
+embeddings_matrix = np.zeros((vocab_size+1, embedding_dim));
+for word, i in word_index.items():
+    embedding_vector = embeddings_index.get(word);
+    if embedding_vector is not None:
+        embeddings_matrix[i] = embedding_vector;
+        
+model = tf.keras.Sequential([
+    tf.keras.layers.Embedding(vocab_size+1, embedding_dim, input_length=max_length, weights=[embeddings_matrix], trainable=False),
+    # YOUR CODE HERE - experiment with combining different types, such as convolutions and LSTMs
+    tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(128, activation="relu", return_sequences=True)),
+    tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(64, activation="relu")),
+    tf.keras.layers.Dense(32, activation="relu"),
+    tf.keras.layers.Dense(1, activation="sigmoid")
+])
+model.compile(optimizer="adam", loss="binary_crossentropy", metrics=["accuracy"])
+model.summary()
+
+num_epochs = 50
+history = model.fit(training_sequences, training_labels, epochs=num_epochs, validation_data=(test_sequences, test_labels), verbose=2)
