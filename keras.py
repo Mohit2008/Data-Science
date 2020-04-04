@@ -360,9 +360,9 @@ input image, but in the following layers more and more filters are blank. This m
   
 from keras.preprocessing.text import Tokenizer
 samples = ['The cat sat on the mat.', 'The dog ate my homework.']
-tokenizer = Tokenizer(num_words=10000)
+tokenizer = Tokenizer(num_words=10000,oov_token="<NEW>") # use num_words to have which would be used in text_to_seq method
 tokenizer.fit_on_texts(samples)
-sequences = tokenizer.texts_to_sequences(samples) # integer sequence
+sequences = tokenizer.texts_to_sequences(samples,padding="post", truncating="post",  maxlen=<>) # integer sequence
 one_hot_results = tokenizer.texts_to_matrix(samples, mode='binary') # one hot encoded
 word_index = tokenizer.word_index # get the token dictionary
 
@@ -387,6 +387,9 @@ from keras.layers import Embedding
 # and the dimensionality of the embeddings, here 64.
 embedding_layer = Embedding(1000, 64) # for 1000 tokens represent each token with a 64 dim vector
 
+Notebook - https://colab.research.google.com/github/lmoroney/dlaicourse/blob/master/TensorFlow%20In%20Practice/Course%203%20-%20NLP/Course%203%20-%20Week%202%20-%20Lesson%201.ipynb#scrollTo=b5S6-58FPtvL
+         - (Text Classification Multi class) -https://colab.research.google.com/drive/1_6JuE7gDiPG33JgyIYCBmdp_8u0tl9cs
+      
 -------------------------------------------------------------
   
 21. Use a pre trained embedding:
@@ -811,3 +814,59 @@ model.compile(loss=['mean_absolute_error', 'binary_crossentropy'], optimizer=Ada
 (Binary class) https://colab.research.google.com/github/lmoroney/dlaicourse/blob/master/Course%202%20-%20Part%206%20-%20Lesson%203%20-%20Notebook.ipynb#scrollTo=BMXb913pbvFg
 (Multi-Class) https://colab.research.google.com/github/lmoroney/dlaicourse/blob/master/Course%202%20-%20Part%208%20-%20Lesson%202%20-%20Notebook%20(RockPaperScissors).ipynb#scrollTo=it1c0jCiNCIM
     
+    
+44. Create dir structure for keras:
+
+shutil.rmtree('/tmp')
+try:
+    directory="/tmp/covid_vs_normal"
+    if not os.path.exists(directory):
+        os.makedirs(directory+"/training/covid")
+        os.makedirs(directory+"/training/normal")
+        os.makedirs(directory+"/testing/covid")
+        os.makedirs(directory+"/testing/normal")
+except OSError:
+    pass
+
+# modify this logic based upon the need , here i had lot many examples in normal class and only 
+# 200 examples in covid class so i had to do downsampling of normal hence the additional logic 
+def split_data(SOURCE, TRAINING, TESTING, SPLIT_SIZE, SPLIT):
+    if SPLIT=="NORMAL": # to downsample examples for this class
+      all_files=os.listdir(SOURCE)
+      down_Sample_files=random.sample(all_files, int(len(all_files)*0.17)) # get only 200 examples 
+      train_files=random.sample(down_Sample_files, int(len(down_Sample_files)*SPLIT_SIZE))
+    else:
+      all_files=os.listdir(SOURCE)
+      train_files=random.sample(all_files, int(len(all_files)*SPLIT_SIZE))
+    #print(train_files)
+    for f in train_files: copyfile(SOURCE+f, TRAINING+f) # set up the train directory
+    for f in os.listdir(SOURCE): # set up the lest dir
+      if SPLIT=="NORMAL": 
+        if f not in train_files and f in down_Sample_files:
+            copyfile(SOURCE+f, TESTING+f)
+      else:
+        if f not in train_files:
+            copyfile(SOURCE+f, TESTING+f)
+
+
+COVID_SOURCE_DIR = "/content/COVID-19 Radiography Database/COVID-19/
+TRAINING_COVID_DIR = "/tmp/covid_vs_normal/training/covid/"
+TESTING_COVID_DIR = "/tmp/covid_vs_normal/testing/covid/"
+NORMAL_SOURCE_DIR = "/content/COVID-19 Radiography Database/NORMAL/
+TRAINING_NORMAL_DIR = "/tmp/covid_vs_normal/training/normal/"
+TESTING_NORMAL_DIR = "/tmp/covid_vs_normal/testing/normal/"
+
+split_size = .9
+split_data(COVID_SOURCE_DIR, TRAINING_COVID_DIR, TESTING_COVID_DIR, split_size, "COVID") # gen dir to covide
+split_data(NORMAL_SOURCE_DIR, TRAINING_NORMAL_DIR, TESTING_NORMAL_DIR, split_size, 'NORMAL') # gen dir for normal
+
+
+45. Kaglle utility for downaloding data 
+
+! pip install -q kaggle
+from google.colab import files
+files.upload()
+! mkdir ~/.kaggle
+! cp kaggle.json ~/.kaggle/
+! chmod 600 ~/.kaggle/kaggle.json
+! kaggle datasets download --unzip '<username>/<datasetname>'
