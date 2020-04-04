@@ -390,6 +390,7 @@ embedding_layer = Embedding(1000, 64,input_length=<seq_length>) # for 1000 token
 Notebook - https://colab.research.google.com/github/lmoroney/dlaicourse/blob/master/TensorFlow%20In%20Practice/Course%203%20-%20NLP/Course%203%20-%20Week%202%20-%20Lesson%201.ipynb#scrollTo=b5S6-58FPtvL
          - (Text Classification Multi class) -https://colab.research.google.com/drive/1_6JuE7gDiPG33JgyIYCBmdp_8u0tl9cs
          -(Pretrained Embedding+LSTM) - https://colab.research.google.com/drive/1nrxfefixKSB_LvldhfDoD0kEift6cQ8n
+         - (Language modeling word level) -https://colab.research.google.com/drive/1nWhmOVaELFhhQJwA2_lidP8jnGJ2fylR
           
       
 -------------------------------------------------------------
