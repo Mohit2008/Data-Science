@@ -385,7 +385,7 @@ from keras.layers import Embedding
 # The Embedding layer takes at least two arguments:
 # the number of possible tokens, here 1000 (1 + maximum word index),
 # and the dimensionality of the embeddings, here 64.
-embedding_layer = Embedding(1000, 64) # for 1000 tokens represent each token with a 64 dim vector
+embedding_layer = Embedding(1000, 64,input_length=<seq_length>) # for 1000 tokens represent each token with a 64 dim vector
 
 Notebook - https://colab.research.google.com/github/lmoroney/dlaicourse/blob/master/TensorFlow%20In%20Practice/Course%203%20-%20NLP/Course%203%20-%20Week%202%20-%20Lesson%201.ipynb#scrollTo=b5S6-58FPtvL
          - (Text Classification Multi class) -https://colab.research.google.com/drive/1_6JuE7gDiPG33JgyIYCBmdp_8u0tl9cs
