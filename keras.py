@@ -906,3 +906,24 @@ model.summary()
 
 num_epochs = 50
 history = model.fit(training_sequences, training_labels, epochs=num_epochs, validation_data=(test_sequences, test_labels), verbose=2)
+
+
+47. Learning Rate Finder
+
+model = tf.keras.models.Sequential([
+    tf.keras.layers.Dense(10, input_shape=[window_size], activation="relu"), 
+    tf.keras.layers.Dense(10, activation="relu"), 
+    tf.keras.layers.Dense(1)
+])
+
+lr_schedule = tf.keras.callbacks.LearningRateScheduler(
+    lambda epoch: 1e-8 * 10**(epoch / 20))
+optimizer = tf.keras.optimizers.SGD(lr=1e-8, momentum=0.9)
+model.compile(loss="mse", optimizer=optimizer)
+history = model.fit(dataset, epochs=100, callbacks=[lr_schedule], verbose=0)
+
+
+lrs = 1e-8 * (10 ** (np.arange(100) / 20))
+plt.semilogx(lrs, history.history["loss"]) # you can see how loss decrease as a function of learning rate and then you can pick the one where the loss pleataeu
+plt.axis([1e-8, 1e-3, 0, 300])
+
