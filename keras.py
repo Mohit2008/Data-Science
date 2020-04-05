@@ -927,3 +927,13 @@ lrs = 1e-8 * (10 ** (np.arange(100) / 20))
 plt.semilogx(lrs, history.history["loss"]) # you can see how loss decrease as a function of learning rate and then you can pick the one where the loss pleataeu
 plt.axis([1e-8, 1e-3, 0, 300])
 
+
+48. Incase of RNN your input is of shape(<batch_size>, <sequence_lenght>, <dim>), for ex (4,30,1) where i have a batch size of 
+4 my window in 30 dim that is it will look at past 30 timesteps and since its unitvariance i have a single dim , in case of 
+multivariate it would be multiple dim.
+
+The RNN then generates cell states that are passed accross each timesteps and output sequence each having dim of (<batch_size>, <no of neurons>)
+thus if i have 32 neurons in my RNN i would have (4,32) as the shape , when you have return_sequence=True you get output
+sequence from each timesetps therby having dim (4,32,30) , by defualt you only get the last output sequence in which case 
+the size of output tensor would be (4,32,1).
+
