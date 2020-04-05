@@ -361,6 +361,12 @@ https://colab.research.google.com/drive/1yaklEE2Ud0vrSWdEcdIFB64psUwFtFR4
 DNN for Time series forecasting +LR Finder
 - https://colab.research.google.com/github/lmoroney/dlaicourse/blob/master/TensorFlow%20In%20Practice/Course%204%20-%20S%2BP/S%2BP%20Week%202%20Lesson%203.ipynb#scrollTo=NJN-tCZlnbM0
            
-
+RNN on time series data
+https://colab.research.google.com/github/lmoroney/dlaicourse/blob/master/TensorFlow%20In%20Practice/Course%204%20-%20S%2BP/S%2BP%20Week%203%20Lesson%202%20-%20RNN.ipynb#scrollTo=5He3pp-Hj758
+           
+LSTM for time series data univariate 
+https://colab.research.google.com/github/lmoroney/dlaicourse/blob/master/TensorFlow%20In%20Practice/Course%204%20-%20S%2BP/S%2BP%20Week%203%20Lesson%204%20-%20LSTM.ipynb
+           
+         
            
        
