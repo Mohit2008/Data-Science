@@ -940,4 +940,16 @@ the size of output tensor would be (4,32,1).
 https://github.com/Mohit2008/Data-Science/blob/master/Screenshot%202020-04-05%20at%207.16.51%20PM.png
   
   
+49. When you want to execute some arbitary code while training you can use lambda layers
 
+model = tf.keras.models.Sequential([
+  tf.keras.layers.Lambda(lambda x: tf.expand_dims(x, axis=-1),
+                      input_shape=[None]),
+    tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(32, return_sequences=True)),
+  tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(32)),
+  tf.keras.layers.Dense(1),
+  tf.keras.layers.Lambda(lambda x: x * 100.0)
+])
+
+50 Tensorflow in practice (Keras notebooks)
+https://github.com/lmoroney/dlaicourse
