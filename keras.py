@@ -937,3 +937,7 @@ thus if i have 32 neurons in my RNN i would have (4,32) as the shape , when you 
 sequence from each timesetps therby having dim (4,32,30) , by defualt you only get the last output sequence in which case 
 the size of output tensor would be (4,32,1).
 
+https://github.com/Mohit2008/Data-Science/blob/master/Screenshot%202020-04-05%20at%207.16.51%20PM.png
+  
+  
+
