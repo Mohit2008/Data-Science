@@ -352,4 +352,8 @@ stepwise_model = auto_arima(data, start_p=1, start_q=1,
 # https://otexts.com/fpp2/             good resource for studying time series in depth
 
 
-
+#
+Simple MA+Differencing
+https://colab.research.google.com/drive/1yaklEE2Ud0vrSWdEcdIFB64psUwFtFR4
+           
+       
