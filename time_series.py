@@ -355,5 +355,12 @@ stepwise_model = auto_arima(data, start_p=1, start_q=1,
 #
 Simple MA+Differencing
 https://colab.research.google.com/drive/1yaklEE2Ud0vrSWdEcdIFB64psUwFtFR4
+ 
+
+#           
+DNN for Time series forecasting +LR Finder
+- https://colab.research.google.com/github/lmoroney/dlaicourse/blob/master/TensorFlow%20In%20Practice/Course%204%20-%20S%2BP/S%2BP%20Week%202%20Lesson%203.ipynb#scrollTo=NJN-tCZlnbM0
+           
+
            
        
