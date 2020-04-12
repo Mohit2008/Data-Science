@@ -974,3 +974,23 @@ CONV+LSTM for time series univariate
 https://colab.research.google.com/github/lmoroney/dlaicourse/blob/master/TensorFlow%20In%20Practice/Course%204%20-%20S%2BP/S%2BP%20Week%204%20Lesson%201.ipynb
            
 https://colab.research.google.com/github/lmoroney/dlaicourse/blob/master/TensorFlow%20In%20Practice/Course%204%20-%20S%2BP/S%2BP%20Week%204%20Lesson%205.ipynb
+
+  
+  
+52. Center crop an image trick
+
+def image_center_crop(img):
+    """
+    Makes a square center crop of an img, which is a [h, w, 3] numpy array.
+    Returns [min(h, w), min(h, w), 3] output with same width and height.
+    For cropping use numpy slicing.
+    """
+    
+    height, width =img.shape[0], img.shape[1]
+    crop= np.int(np.abs(height-width)/2)
+    if width > height :
+        cropped_img=img[:, crop:crop+height, :]
+    else:
+        cropped_img = img[crop:crop+height,:, :]
+    
+    return cropped_img
