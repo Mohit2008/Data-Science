@@ -994,3 +994,7 @@ def image_center_crop(img):
         cropped_img = img[crop:crop+height,:, :]
     
     return cropped_img
+
+  
+53. CNN+AutoEncoders+Denosing+Image Retrieval+Image morphing
+https://github.com/Mohit2008/Data-Science/blob/master/Autoencoders-task.ipynb
