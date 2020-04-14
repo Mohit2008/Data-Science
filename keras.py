@@ -998,3 +998,34 @@ def image_center_crop(img):
   
 53. CNN+AutoEncoders+Denosing+Image Retrieval+Image morphing
 https://github.com/Mohit2008/Data-Science/blob/master/Autoencoders-task.ipynb
+  
+  
+54.
+RNN- Reurrent NN are good at processing sequential data where the current input depends upon the input that appeared at previous
+time step , this setup might not be possible with a MLP where all the inputs are seen at once . A RNN can be thought of as a 
+MLP which process the inputs one by one and at evert time slice it combines the information from the previous outputs and the 
+current inputs and creates outputs . In a flatten setup you can think of feeding a single feature at every time slice , combining 
+with output from previous step and passing it throug a Dense layer and creating output which then again feeds as input for 
+nect timestep.
+
+Along the falltened architecture the parameters are shared so we still have a single weight matrix for the no of units 
+thats are present in a single cell.
+
+Output_t_i=tanh(Dense(Concatenate(Output_t_i-1, input_i)))
+
+LSTM:
+This follow a similar recurrenet architecture like RNN but in each cell or at each timestep we have 4 layers and many more inputs 
+that are used. At every time slice we have the hidden_state_t-1 , input_i, cell state c_t-1. The cell state adds value to 
+this architecture by controlling what needs to be remeberded and what has to be forgetted. The information is cell state 
+is regulated by 3 gates (forget , input and output gates) which decide how to generate c_t and hidden_state which then flows to 
+next recurrent step.
+
+GRU:
+ It combines the forget and input gates into a single “update gate.” 
+It also merges the cell state and hidden state, and makes some other changes.
+  
+https://colah.github.io/posts/2015-08-Understanding-LSTMs/
+  
+
+  
+  
