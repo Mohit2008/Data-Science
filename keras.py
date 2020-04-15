@@ -1028,4 +1028,11 @@ https://colah.github.io/posts/2015-08-Understanding-LSTMs/
   
 
   
+55. In LSTM you can set the stateful=True which will help you to save the cell states and pass it to the next batch so that 
+your LSTM can now capture longer temporal dependency. For ex if the seq length is 1 to 10 then without stateful only 10 timestamp 
+dependency can be captured but with stateful it can even capture the longer depndency which could be present in your next batch 
+which is 11 to 20 . Make sure you dont shuffle your data when you train the model and you reset the states after every epoch
+
+https://www.youtube.com/watch?v=e1pEIYVOtqc&list=PLA6JLDcev1HySaun4IKK_NMrMYG1rpNGL&index=3
+  
   
