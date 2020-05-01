@@ -202,6 +202,21 @@ validation_generator = validation_datagen.flow(
     batch_size=64
 )
 
+-----------
+
+If you want to load from dataframe :
+  generator = image_generator.flow_from_dataframe(
+        dataframe=train_df,
+        directory="nih/images-small/",
+        x_col="Image", # features
+        y_col= ['Mass'], # labels
+        class_mode="raw", # 'Mass' column should be in train_df
+        batch_size= 1, # images per batch
+        shuffle=False, # shuffle the rows or not
+        target_size=(320,320) # width and height of output image
+)
+  
+  
 * When every you are using some generator function you will now have to use fir_generator, evaluate_generator, predict_generator which 
 is provided by keras which lets it know that the data has to be generated from a generator function which in our case is ImageDataGenerator:
   
@@ -232,7 +247,9 @@ history = model.fit_generator(
     shear_range=0.2, # is for randomly applying shearing transformations.
     zoom_range=0.2, # s for randomly zooming inside pictures.
     horizontal_flip=True,# is for randomly flipping half of the images horizontally 
-   fill_mode='nearest',) # is the strategy used for filling in newly created pixels, which can appear after a rotation or a width/height shift.
+   fill_mode='nearest',
+    samplewise_center=True, #Set each sample mean to 0.
+    samplewise_std_normalization= True) # Divide each input by its standard deviation) # is the strategy used for filling in newly created pixels, which can appear after a rotation or a width/height shift.
   
   
 model = models.Sequential()
@@ -1036,3 +1053,13 @@ which is 11 to 20 . Make sure you dont shuffle your data when you train the mode
 https://www.youtube.com/watch?v=e1pEIYVOtqc&list=PLA6JLDcev1HySaun4IKK_NMrMYG1rpNGL&index=3
   
   
+56. In a inbalanced class setup the contribution of minority class to loss fn is very less than the contribution of majority class
+which may cause model instability instead we should weight the loss for each class so that there contribution is equalised
+
+
+from sklearn.utils import class_weight
+class_weights = class_weight.compute_class_weight('balanced',
+                                                 np.unique(y_train),
+                                                 y_train)
+model.fit(X_train, y_train, class_weight=class_weights)
+
